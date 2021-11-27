@@ -7,7 +7,7 @@ class BaseObsBuilder(ObsBuilder):
     def reset(self, initial_state: GameState):
         pass
 
-    def build_obs(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> Any:
+    def build_obs(self, player: PlayerData, state: GameState, previous_action: np.ndarray):
         obs = []
     
         #If this observation is being built for a player on the orange team, we need to invert all the physics data we use.
@@ -24,4 +24,4 @@ class BaseObsBuilder(ObsBuilder):
             else:
                 obs += player.car_data.serialize()
     
-    return np.asarray(obs, dtype=np.float32)
+        return np.asarray(obs, dtype=np.float32)
