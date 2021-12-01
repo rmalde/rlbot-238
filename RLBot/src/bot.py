@@ -1,5 +1,7 @@
 from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
 from rlbot.utils.structures.game_data_struct import GameTickPacket
+from rlbot.utils.game_state_util import BallState, CarState, Physics, Vector3, Rotator, GameInfoState
+from rlbot.utils.game_state_util import GameState as GameStateRLBot
 
 import numpy as np
 from agent import Agent
@@ -8,6 +10,16 @@ from rlgym_compat import GameState
 
 
 class RLGymExampleBot(BaseAgent):
+    SPAWN_BLUE_POS = [[-2048, -2560, 17], [2048, -2560, 17],
+                      [-256, -3840, 17], [256, -3840, 17], [0, -4608, 17]]
+    SPAWN_BLUE_YAW = [0.25 * np.pi, 0.75 * np.pi,
+                      0.5 * np.pi, 0.5 * np.pi, 0.5 * np.pi]
+    SPAWN_ORANGE_POS = [[2048, 2560, 17], [-2048, 2560, 17],
+                        [256, 3840, 17], [-256, 3840, 17], [0, 4608, 17]]
+    SPAWN_ORANGE_YAW = [-0.75 * np.pi, -0.25 *
+                        np.pi, -0.5 * np.pi, -0.5 * np.pi, -0.5 * np.pi]
+    spawn_pos = 1
+
     def __init__(self, name, team, index):
         super().__init__(name, team, index)
 
@@ -25,18 +37,36 @@ class RLGymExampleBot(BaseAgent):
         self.update_action = True
         self.ticks = 0
         self.prev_time = 0
+        self.car_moved_to_kickoff = False
+        
         print('RLGymExampleBot Ready - Index:', index)
 
     def initialize_agent(self):
         # Initialize the rlgym GameState object now that the game is active and the info is available
         self.game_state = GameState(self.get_field_info())
+        
         self.ticks = self.tick_skip  # So we take an action the first tick
         self.prev_time = 0
         self.controls = SimpleControllerState()
         self.action = np.zeros(8)
         self.update_action = True
+    
+    def set_car_to_kickoff(self):
+        pos_vec = self.SPAWN_BLUE_POS[self.spawn_pos]
+        car_state = CarState(
+            physics=Physics(
+            location=Vector3(x=pos_vec[0], y=pos_vec[1], z=pos_vec[2]),
+            rotation=Rotator(yaw=self.SPAWN_BLUE_YAW[self.spawn_pos])
+        ))
+        updated_game_state = GameStateRLBot(cars={self.index: car_state})
+        self.set_game_state(updated_game_state)
+
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
+        #move car to specific kickoff location
+        if packet.game_info.is_kickoff_pause and not self.car_moved_to_kickoff:
+            self.car_moved_to_kickoff = True
+            self.set_car_to_kickoff()
         cur_time = packet.game_info.seconds_elapsed
         delta = cur_time - self.prev_time
         self.prev_time = cur_time

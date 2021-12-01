@@ -5,6 +5,7 @@ from customObsBuilder import BaseObsBuilder
 from customRewardFunction import BaseRewardFunction
 from customRewardFunction import combReward
 from customTerminalCondition import BaseTerminalCondition
+from customStateSetter import CustomStateSetter
 from rlgym.utils.terminal_conditions.common_conditions import TimeoutCondition
 from rlgym.utils.obs_builders import AdvancedObs
 import pickle
@@ -17,12 +18,14 @@ def get_env():
     # obs_builder = BaseObsBuilder()
     obs_builder = AdvancedObs()
     terminal_condition = BaseTerminalCondition()
-    timeout_condition = TimeoutCondition(250) #Times put after certain amount of time, I think 240=10sec? 
-
+    timeout_condition = TimeoutCondition(75) #Multiply by .0666 to get #seconds. 150timesteps = 10 seconds
+    state_setter = CustomStateSetter()
     env = rlgym.make(
         reward_fn=reward_fn,
         obs_builder=obs_builder,
-        terminal_conditions=[terminal_condition, timeout_condition]
+        terminal_conditions=[terminal_condition, timeout_condition],
+        state_setter=state_setter,
+        game_speed=1
     )
     return env
 
@@ -36,7 +39,7 @@ def train(isAnUpdate, update, new):
         model = PPO("MlpPolicy", env=env, verbose=1)
 
     try:
-        model.learn(total_timesteps=int(1e4))
+        model.learn(total_timesteps=int(1e6))
 
         model.save("models/" + new)
         print("Saved Model")

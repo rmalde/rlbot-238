@@ -9,7 +9,7 @@ class Agent:
         #
         # self.actor = # your Model
         #
-        attemptName = "TouchBall1e6" #Change for attempt
+        attemptName = "OneKickoff" #Change for attempt
         
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         attemptPath = os.path.join(cur_dir, '../../models/'+ attemptName)
@@ -17,7 +17,5 @@ class Agent:
         self.model = model
 
     def act(self, state):
-        # Evaluate your model here
-        # action = [1, 0, 0, 0, 0, 0, 0, 0]
-        action, _state = self.model.predict(state, deterministic=True)
+        action, _state = self.model.predict(state)
         return action

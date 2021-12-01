@@ -7,6 +7,7 @@ from rlgym.utils.reward_functions.common_rewards import VelocityBallToGoalReward
 from rlgym.utils.reward_functions.common_rewards.misc_rewards import SaveBoostReward
 from rlgym.utils.reward_functions.common_rewards import VelocityReward
 from  rlgym.utils.reward_functions.combined_reward import CombinedReward
+from rlgym.utils.common_values import BALL_RADIUS
 
 
 from rlgym.utils.gamestates import GameState, PlayerData
@@ -36,6 +37,7 @@ class BaseRewardFunction(RewardFunction):
 
     def get_distance(self, player, state):
         dist = np.linalg.norm(player.car_data.position - state.ball.position) - BALL_RADIUS
+        return dist
 
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
@@ -54,7 +56,7 @@ class BaseRewardFunction(RewardFunction):
         '''
         # reward = get_combined_reward().get_reward(player, state, previous_action)
         
-        reward = -10 * self.get_distance(player, state) + 1000*TouchBallReward().get_reward(player, state, previous_action)
+        reward = -0.0001 * self.get_distance(player, state) + TouchBallReward().get_reward(player, state, previous_action) * 1000
         # reward = TouchBallReward().get_reward(player, state, previous_action)
         
         return reward
@@ -62,4 +64,8 @@ class BaseRewardFunction(RewardFunction):
 
     
     def get_final_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
-        return 0
+        if state.last_touch != -1:
+            print("touched ball")
+            return 1000
+        else:
+            return 0
