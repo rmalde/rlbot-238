@@ -9,7 +9,7 @@ class Agent:
         #
         # self.actor = # your Model
         #
-        attemptName = "OneKickoff" #Change for attempt
+        attemptName = "TwoKickoff" #Change for attempt
         
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         attemptPath = os.path.join(cur_dir, '../../models/'+ attemptName)

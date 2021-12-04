@@ -18,7 +18,7 @@ class RLGymExampleBot(BaseAgent):
                         [256, 3840, 17], [-256, 3840, 17], [0, 4608, 17]]
     SPAWN_ORANGE_YAW = [-0.75 * np.pi, -0.25 *
                         np.pi, -0.5 * np.pi, -0.5 * np.pi, -0.5 * np.pi]
-    spawn_pos = 1
+    spawn_pos = 0
 
     def __init__(self, name, team, index):
         super().__init__(name, team, index)
@@ -67,6 +67,7 @@ class RLGymExampleBot(BaseAgent):
         if packet.game_info.is_kickoff_pause and not self.car_moved_to_kickoff:
             self.car_moved_to_kickoff = True
             self.set_car_to_kickoff()
+            self.game_state = GameState(self.get_field_info())
         cur_time = packet.game_info.seconds_elapsed
         delta = cur_time - self.prev_time
         self.prev_time = cur_time

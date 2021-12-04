@@ -7,10 +7,10 @@ class BaseTerminalCondition(TerminalCondition):
         pass
 
     def is_terminal(self, current_state: GameState) -> bool:
-        #ends when car touches the ball
-        if current_state.last_touch != -1:
-            print("touched ball, terminated")
-            return True
-        else:
-            return False
-        # return False
+        # #ends when car touches the ball
+        # if current_state.last_touch != -1:
+        #     print("touched ball, terminated")
+        #     return True
+        # else:
+        #     return False
+        return False
