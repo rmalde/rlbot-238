@@ -1,5 +1,5 @@
-# rlbot-238
-Reinforcement Learning Rocket League Bot for CS 238 Final Project
+# Using Curriculum Training and Negative Rewards to Train a Rocket League Kickoff Bot
+CS 238 Final Project
 
 By: Ronak Malde and Arjun Karanam
 
