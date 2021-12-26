@@ -5,7 +5,7 @@ By: Ronak Malde and Arjun Karanam
 
 Video: https://youtu.be/vx8clBZe5Yc 
 
-Link to Paper: 
+Link to Paper: https://github.com/rmalde/rlbot-238/blob/main/Final%20Paper.pdf
 
 Abstract:
 
